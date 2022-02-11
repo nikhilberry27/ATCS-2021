@@ -65,8 +65,10 @@ class TicTacToe:
     def take_turn(self, player):
         # TODO: Simply call the take_manual_turn function
 
-        #make a move
-        self.take_manual_turn(player)
+        if player == "O":
+            self.take_random_turn(player)
+        else:
+            self.take_manual_turn(player)
 
     def check_col_win(self, player):
         # TODO: Check col win
@@ -128,6 +130,22 @@ class TicTacToe:
                 if n == '-':
                     return False
         return True
+
+
+
+
+
+    def take_random_turn(self, player):
+        while True:
+            row = random.randint(0,3)
+            col = random.randint(0,3)
+            isValid = self.is_valid_move(row, col)
+            if isValid:
+                break
+
+        self.place_player(player, row, col)
+
+
 
     def play_game(self):
         # TODO: Play game
