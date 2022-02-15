@@ -66,8 +66,10 @@ class TicTacToe:
         # TODO: Simply call the take_manual_turn function
 
         if player == "O":
-            self.take_random_turn(player)
+            #minimax player
+            self.take_minimax_turn(player)
         else:
+            #normal user player
             self.take_manual_turn(player)
 
     def check_col_win(self, player):
@@ -125,16 +127,16 @@ class TicTacToe:
         # TODO: Check tie
 
         #check tie
+        if self.check_win("X") == True or self.check_win("O") == True:
+            return False
+
         for i in self.board:
             for n in i:
                 if n == '-':
                     return False
         return True
 
-
-
-
-
+    #place player in a random, empty location on the board
     def take_random_turn(self, player):
         while True:
             row = random.randint(0,3)
@@ -145,6 +147,57 @@ class TicTacToe:
 
         self.place_player(player, row, col)
 
+    #place player according to minimax (AI) rules
+    def take_minimax_turn(self, player):
+        score, row, col = self.minimax(player)
+        print (row)
+        print (col)
+        print (score)
+        self.place_player(player, row, col)
+
+    #optimize player move based on best outcome for player "O"
+    def minimax(self, player):
+        opt_row = -1
+        opt_col = -1
+
+        #base cases
+        if self.check_win("O"):
+            return (10, None, None)
+        if self.check_tie():
+            return (0, None, None)
+        if self.check_win("X"):
+            return (-10, None, None)
+
+        #find optimal move for player "O" - which move will make "O" win?
+        if player == "O":
+            best = -100
+            for r in range(3):
+                for c in range(3):
+                    if self.board[r][c] == "-":
+                        self.place_player("O", r, c)
+                        score = self.minimax("X")[0]
+                        if best < score:
+                            best = score
+                            opt_row = r
+                            opt_col = c
+                        self.place_player("-", r, c)
+            return (best, opt_row, opt_col)
+
+        #find optimal move for player "X" - which move will make "X" lose?
+        if player == "X":
+            worst = 100
+            for a in range(3):
+                for b in range(3):
+                    if self.board[a][b] == "-":
+                        self.place_player("X", a, b)
+                        score = self.minimax("O")[0]
+                        if worst > score:
+                            worst = score
+                            opt_row = a
+                            opt_col = b
+
+                        self.place_player("-", a, b)
+            return (worst, opt_row, opt_col)
 
 
     def play_game(self):
