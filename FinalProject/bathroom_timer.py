@@ -1,18 +1,35 @@
 """
 @author: Nikhil Berry
-@version: 04/26/2022
+@version: 04/28/2022
+Current App Name: Nature Called
 """
 
 import pandas as pd
 import matplotlib.pyplot as plt
+import csv
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 
+# Collect user-inputted data
+with open('bathroom_user.csv', 'w') as f:
+    w = csv.writer(f, quoting=csv.QUOTE_NONE)
+
+    w.writerow(["age", "weight", "given_birth", "water_consumption", "time_to_next_bathroom"])
+    for i in range(2):
+        age = input("How old are you? ")
+        weight = input("How much do you weigh? (lbs): ")
+        given_birth = input("Have you given birth? (0-n,1-y): ")
+        water_consumption = input("How much water have you consumed since your last bathroom visit? (ml): ")
+        time_to_next_bathroom = input("What time did you have to use the bathroom next?: ")
+        w.writerow([age, weight, given_birth, water_consumption, time_to_next_bathroom])
+
+
 ''' Load Data '''
-data = pd.read_csv("data/bathroom.csv")
+data = pd.read_csv("bathroom_user.csv")
 x_1 = data["age"]
 x_2 = data["weight"]
-y = data["given_birth"]
+x_3 = data["given_birth"]
+y = data["time_to_next_bathroom"]
 
 ''' TODO: Create Linear Regression '''
 # Reload and/or reformat the data to get the values from x and y
