@@ -11,29 +11,34 @@ from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 
 # Collect user-inputted data
-with open('bathroom_user.csv', 'w') as f:
-    w = csv.writer(f, quoting=csv.QUOTE_NONE)
 
-    w.writerow(["age", "weight", "given_birth", "water_consumption", "time_to_next_bathroom"])
-    for i in range(2):
-        age = input("How old are you? ")
-        weight = input("How much do you weigh? (lbs): ")
-        given_birth = input("Have you given birth? (0-n,1-y): ")
-        water_consumption = input("How much water have you consumed since your last bathroom visit? (ml): ")
-        time_to_next_bathroom = input("What time did you have to use the bathroom next?: ")
-        w.writerow([age, weight, given_birth, water_consumption, time_to_next_bathroom])
+user_data = pd.read_csv("bathroom_user.csv")
+if len(user_data) < 21:
+    with open('bathroom_user.csv', 'a') as f:
+        w = csv.writer(f, quoting=csv.QUOTE_NONE)
+
+        w.writerow(["age", "weight", "given_birth", "water_consumption", "time_to_next_bathroom"])
+        for i in range(21-len(user_data)):
+            age = input("How old are you? ")
+            weight = input("How much do you weigh? (lbs): ")
+            given_birth = input("Have you given birth? (0-n,1-y): ")
+            water_consumption = input("How much water have you consumed since your last bathroom visit? (ml): ")
+            time_to_next_bathroom = input("What time did you have to use the bathroom next?: ")
+            w.writerow([age, weight, given_birth, water_consumption, time_to_next_bathroom])
 
 
-''' Load Data '''
+# Load Data
 data = pd.read_csv("bathroom_user.csv")
 x_1 = data["age"]
 x_2 = data["weight"]
 x_3 = data["given_birth"]
+x_4 = data["water_consumption"]
 y = data["time_to_next_bathroom"]
 
 ''' TODO: Create Linear Regression '''
+
 # Reload and/or reformat the data to get the values from x and y
-x = data[["age", "weight", "given_birth"]].values
+x = data[["age", "weight", "given_birth", "water_consumption"]].values
 y = data["time_to_next_bathroom"].values
 
 # Separate data into training and test sets
@@ -48,6 +53,8 @@ print("Model Information")
 print("Age coef: ", round(float(model.coef_[0]), 2))
 print("Weight coef: ", round(float(model.coef_[1]), 2))
 print("Given_birth coef: ", round(float(model.coef_[2]), 2))
+print("Water consumption coef: ", round(float(model.coef_[3]), 2))
+
 
 print("Intercept: ", round(float(model.intercept_), 2))
 print("R-squared: ", round(float(model.score(x_train,y_train)), 2))
@@ -69,6 +76,11 @@ for index in range(len(x_test)):
     x_age = x_test[index][0]
     x_weight = x_test[index][1]
     x_given_birth = x_test[index][2]
-    print("Age:", x_age, "Weight:", x_weight, "Given Birth:", x_given_birth, "Predicted Time:", y_pred, "Actual Time:", actual)
+    x_water_consumption = x_test[index][3]
+    print("Age:", x_age, "Weight:", x_weight, "Given Birth:", x_given_birth, "Water Consumption: ", x_water_consumption, "Predicted Time:", y_pred, "Actual Time:", actual)
+
+
+
+#tkinter
 
 
